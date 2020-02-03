@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { NextPage } from "next";
 import styled, { css } from "styled-components";
 import SlideInType from "../components/SlideInType";
@@ -25,17 +25,17 @@ const GET_SKILLS = gql`
 `;
 
 const About: NextPage = () => {
-  const wrapRef = useRef<HTMLDivElement>(null);
   const [isOpenInfo, setIsOpenInfo] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<"intro" | "skills">("intro");
   const { data, error, loading } = useQuery<{ getSkills: Data[] }>(GET_SKILLS);
 
   useEffect(() => {
     const judgeScroll = (e: WheelEvent) => {
+      e.preventDefault();
       setIsOpenInfo(e.deltaY > 0);
     };
 
-    wrapRef.current.addEventListener(
+    document.body.addEventListener(
       "wheel",
       e => {
         judgeScroll(e);
@@ -46,7 +46,7 @@ const About: NextPage = () => {
     );
 
     return () => {
-      wrapRef.current.removeEventListener("wheel", e => {
+      document.body.removeEventListener("wheel", e => {
         judgeScroll(e);
       });
     };
@@ -58,7 +58,7 @@ const About: NextPage = () => {
 
   return (
     <>
-      <Entire ref={wrapRef}>
+      <Entire>
         <TopWrapper isOpenInfo={isOpenInfo}>
           <Name>
             <SlideInType content="Yutaro" baseDelay={300} />
@@ -132,7 +132,6 @@ const Entire = styled.div`
   ${{
     width: "100vw",
     height: "100vh",
-    overflow: "hidden",
     background: "rgba(253, 172, 167, 1)"
   }}
   @media screen and (min-width: 1024px) {
@@ -407,7 +406,10 @@ const button = css`
     fontSize: "20px",
     transition: "all 200ms ease-out",
     fontFamily: "Raleway, sans-serif",
-    letterSpacing: "3px"
+    letterSpacing: "3px",
+    border: "none",
+    outline: "none",
+    cursor: "pointer"
   }}
   &:hover {
     ${{
@@ -420,9 +422,7 @@ const button = css`
 const Intro = styled.button`
 ${button}
 ${{
-  borderRadius: "20px 0px 0px 20px",
-  outline: "none",
-  cursor: "pointer"
+  borderRadius: "20px 0px 0px 20px"
 }}
 ${(props: { isSelected: boolean }) =>
   props.isSelected &&
@@ -435,9 +435,7 @@ ${(props: { isSelected: boolean }) =>
 const Slills = styled.button`
 ${button}
 ${{
-  borderRadius: "0px 20px 20px 0px",
-  outline: "none",
-  cursor: "pointer"
+  borderRadius: "0px 20px 20px 0px"
 }}
 ${(props: { isSelected: boolean }) =>
   props.isSelected &&

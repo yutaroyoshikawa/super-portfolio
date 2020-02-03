@@ -1,11 +1,12 @@
 import React from "react";
 import App, { AppContext } from "next/app";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import { ApolloProvider } from "react-apollo-hooks";
 import { ApolloClient } from "apollo-client";
 import { createHttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
+import Menu from "../components/Menu";
 
 const isBrowser = typeof window !== "undefined";
 
@@ -36,6 +37,9 @@ class MyApp extends App {
       <>
         <GlobalStyle />
         <ApolloProvider client={client}>
+          <MenuWrap>
+            <Menu />
+          </MenuWrap>
           <Component {...pageProps} />
         </ApolloProvider>
       </>
@@ -47,4 +51,13 @@ export default MyApp;
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
+  img {
+    width: 100%;
+  }
+`;
+
+const MenuWrap = styled.div`
+  position: fixed;
+  left: 20px;
+  z-index: 99999;
 `;
